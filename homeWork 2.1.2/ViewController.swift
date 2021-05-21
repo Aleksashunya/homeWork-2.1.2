@@ -7,6 +7,10 @@
 
 import UIKit
 
+enum CurrentLight {
+    case red, yellow, green
+}
+
 class ViewController: UIViewController {
     
     
@@ -16,15 +20,12 @@ class ViewController: UIViewController {
     
     @IBOutlet weak var startButtom: UIButton!
     
-    var lightOn: CGFloat = 1
-    var lightOff: CGFloat = 0.3
-    var step = 0
+    private var lightOn: CGFloat = 1
+    private var lightOff: CGFloat = 0.3
+    private var currentLight = CurrentLight.red
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        redColorView.layer.cornerRadius = redColorView.frame.height / 2
-        yellowColorView.layer.cornerRadius = yellowColorView.frame.height / 2
-        greenColorView.layer.cornerRadius = greenColorView.frame.height / 2
         
         startButtom.layer.cornerRadius = 10
         
@@ -32,23 +33,32 @@ class ViewController: UIViewController {
         yellowColorView.alpha = lightOff
         greenColorView.alpha = lightOff
     }
-
+    
+    override func viewWillLayoutSubviews() {
+        redColorView.layer.cornerRadius = redColorView.frame.width / 2
+        yellowColorView.layer.cornerRadius = yellowColorView.frame.width / 2
+        greenColorView.layer.cornerRadius = greenColorView.frame.width / 2
+    }
+    
+    
     @IBAction func tappedStartButtom(_ sender: Any) {
-        startButtom.setTitle("NEXT", for: .normal)
-        step += 1
+        if startButtom.currentTitle == "START" {
+            startButtom.setTitle("NEXT", for: .normal)
+        }
         
-        switch step {
-        case 1:
+        switch currentLight {
+        case .red:
             greenColorView.alpha = lightOff
             redColorView.alpha = lightOn
-        case 2:
+            currentLight = .yellow
+        case .yellow:
             redColorView.alpha = lightOff
             yellowColorView.alpha = lightOn
-        case 3:
+            currentLight = .green
+        case .green:
             yellowColorView.alpha = lightOff
             greenColorView.alpha = lightOn
-            step = 0
-        default: return
+            currentLight = .red
         }
     }
 }
